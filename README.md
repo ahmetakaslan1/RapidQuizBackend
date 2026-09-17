@@ -60,4 +60,11 @@ Kullanıcı Adı: `admin` (veya .env'de belirlediğiniz isim)
 > **İpucu:** Eğer Kategori adını spesifik olarak **Sürpriz** yaparsanız, yapay zeka konuyu da kendi uydurur ve kategorinin adını değiştirip soruları doldurur.
 
 ---
+
+## 👨‍💻 Geliştirici & Telif Hakkı
+
+Bu proje **Ahmet Akaslan** tarafından geliştirilmiştir.
+© 2026 Ahmet Akaslan - Tüm hakları saklıdır (All rights reserved). Projenin izinsiz kopyalanması veya ticari amaçlarla kullanılması yasaktır.
+
+---
 *Bu proje modern web mimarisi (SPA + API) kurallarına uygun olarak tamamen ölçeklenebilir yapıda tasarlanmıştır.*
