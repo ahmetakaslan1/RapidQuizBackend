@@ -6,4 +6,4 @@ python-dotenv
 gunicorn
 dj-database-url
 PyJWT
- 
+google-genai 
