@@ -34,6 +34,7 @@ def generate_questions(topic=None, num_questions=100):
         prompt = f"""
 Sen bir bilgi yarışması (quiz) uzmanısın. Kategori: "{topic}".
 Lütfen bu kategori için zorluk derecesi karışık olan, tamamen yeni {batch_size} adet soru üret.
+ÖNEMLİ: Oyuncuların soruları okumak ve cevaplamak için sadece 10 saniyesi var. Bu yüzden soruların ve şıkların metinleri ÇOK KISA, NET VE ÖZ olmalıdır. Uzun, karmaşık, okuması vakit alan cümlelerden ve gereksiz detaylardan kesinlikle kaçın.
 Format KESİNLİKLE aşağıdaki gibi geçerli bir JSON dizisi (array) olmalıdır. Başka hiçbir açıklama yazma.
 [
     {{

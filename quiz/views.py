@@ -20,13 +20,12 @@ class GetCategoriesView(APIView):
         valid_categories = Category.objects.annotate(q_count=Count('questions')).filter(is_active=True, q_count__gt=0)
         
         daily = valid_categories.filter(is_daily_challenge=True).first()
-        others = valid_categories.filter(is_daily_challenge=False).order_by('?')
+        others = valid_categories.filter(is_daily_challenge=False).order_by('id')
         
         categories = []
         if daily:
             categories.append(daily)
         categories.extend(list(others))
-        categories = categories[:limit]
         
         data = [{"id": c.id, "name": c.name, "is_daily_challenge": c.is_daily_challenge} for c in categories]
         return Response(data)
@@ -71,13 +70,24 @@ class StartGameView(APIView):
         category_id = request.data.get('category_id')
         category = get_object_or_404(Category, id=category_id)
         
-        if category.is_daily_challenge:
-            today = date.today()
-            cache = DailyQuestionCache.objects.filter(category=category, date=today).first()
-            if cache and cache.questions.exists():
-                questions = list(cache.questions.all()[:20])
-            else:
-                questions = list(Question.objects.filter(category=category).order_by('?')[:20])
+        settings_obj = GameSettings.load()
+        reset_time = settings_obj.daily_reset_time
+        now = timezone.localtime(timezone.now())
+        
+        logical_date = now.date()
+        if now.time() < reset_time:
+            logical_date = logical_date - datetime.timedelta(days=1)
+            
+        cache = DailyQuestionCache.objects.filter(category=category, date=logical_date).first()
+        
+        if not cache:
+            qs = list(Question.objects.filter(category=category).order_by('?')[:20])
+            if qs:
+                cache = DailyQuestionCache.objects.create(category=category, date=logical_date)
+                cache.questions.set(qs)
+                
+        if cache and cache.questions.exists():
+            questions = list(cache.questions.all()[:20])
         else:
             questions = list(Question.objects.filter(category=category).order_by('?')[:20])
             
@@ -129,9 +139,9 @@ class SubmitAnswerView(APIView):
             is_correct = (selected_option.upper() == question.correct_option)
             if is_correct:
                 points_to_add = 10 
-                remaining_seconds = int(9.0 - seconds_passed)
+                remaining_seconds = int(10.0 - seconds_passed)
                 if remaining_seconds > 0:
-                    bonus = min(remaining_seconds, 8)
+                    bonus = min(remaining_seconds, 9)
                     points_to_add += bonus
             else:
                 if seconds_passed <= 2.0:

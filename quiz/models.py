@@ -38,6 +38,7 @@ class Leaderboard(models.Model):
         return f"{self.username} - {self.score}"
 
 import uuid
+import datetime
 
 class GameSession(models.Model):
     session_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -52,6 +53,7 @@ class GameSession(models.Model):
 class GameSettings(models.Model):
     max_home_categories = models.IntegerField(default=4, verbose_name="Ana Sayfa Maksimum Kategori Sayısı")
     daily_challenge_duration_days = models.IntegerField(default=1, verbose_name="Günün Kategorisi Süresi (Gün)")
+    daily_reset_time = models.TimeField(default=datetime.time(0, 0), verbose_name="Günlük Soruların Yenilenme Saati")
     
     class Meta:
         verbose_name = "Oyun Ayarları"
